@@ -46,9 +46,9 @@ discover submodules:
 
 .dind_template: &docker_template
   stage: build
-  image: docker:18.09-git
+  image: docker:18.09.7-git
   services:
-    - docker:dind
+    - docker:18.09.7-dind
   variables: &docker_variables
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://localhost:2375/
@@ -319,9 +319,9 @@ compose:
             -f values.yaml \
             --set image.tag="$CI_COMMIT_SHA" \
             --set image.registry="$REGISTRY_IMAGE" \
-            --set image.pullPolicy=IfNotPresent \
             --set image.secrets[0].name="$image_secret_name" \
             --set http.host="$host" \
+            --set vault.token="$VAULT_TOKEN" \
             --set stripe.publicApiKey="$STRIPE_PUBLIC_APIKEY" \
             --set stripe.secretApiKey="$STRIPE_SECRET_APIKEY" \
             --set ldapSettings.SERVER="$AD_SERVER" \
@@ -330,6 +330,7 @@ compose:
             --set ldapSettings.ORG_NAME="$AD_ORG_NAME" \
             --set ldapSettings.OU="users" \
             --set docker.host="$DOCKER_HOST" \
+            --set vault.token="$VAULT_TOKEN" \
             --set docker.port="$DOCKER_PORT" \
             --set docker.key="$DOCKER_KEY" \
             --set docker.cert="$DOCKER_CERT" \
@@ -454,6 +455,7 @@ API:main:machines: *api_test_template
 API:main:networks: *api_test_template
 API:main:schedules: *api_test_template
 API:main:scripts: *api_test_template
+API:main:secrets: *api_test_template
 API:main:teams: *api_test_template
 API:main:ip_whitelisting: *api_test_template
 API:main:volumes: *api_test_template
@@ -548,6 +550,7 @@ MP:lxd-machine-create: *multiprovisioning_test_template
 # MP:openstack-machine-create: *multiprovisioning_test_template
 MP:equinix-metal-machine-create: *multiprovisioning_test_template
 MP:rackspace-machine-create: *multiprovisioning_test_template
+MP:cloudsigma-machine-create: *multiprovisioning_test_template
 
 # Machine Provisioning tests #
 VP:aliyun-volume-create: *multiprovisioning_test_template
@@ -555,6 +558,7 @@ VP:azure-volume-create: *multiprovisioning_test_template
 VP:digital-ocean-volume-create: *multiprovisioning_test_template
 VP:ec2-volume-create: *multiprovisioning_test_template
 VP:gce-volume-create: *multiprovisioning_test_template
+VP:cloudsigma-volume-create: *multiprovisioning_test_template
 # VP:openstack-volume-create: *multiprovisioning_test_template
 #################### UNDEPLOY STAGE ####################
 
